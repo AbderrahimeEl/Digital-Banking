@@ -1,23 +1,26 @@
 package com.elmo.digitalbanking.entities;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 
 @Entity
-@AllArgsConstructor
-@Getter
-@Setter
-@NoArgsConstructor
-@Builder
-
+@AllArgsConstructor @NoArgsConstructor
+@Getter @Setter @Builder
 public class AccountOperation {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
+
     private double amount;
+
+    @Enumerated(EnumType.STRING)
     private OperationType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_account_id")
+    private BankAccount bankAccount;
 }
+
