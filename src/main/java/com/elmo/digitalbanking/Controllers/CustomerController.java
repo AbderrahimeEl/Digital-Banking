@@ -1,4 +1,4 @@
-package com.elmo.digitalbanking.controller;
+package com.elmo.digitalbanking.Controllers;
 
 import com.elmo.digitalbanking.dto.CustomerDTO;
 import com.elmo.digitalbanking.service.CustomerService;
