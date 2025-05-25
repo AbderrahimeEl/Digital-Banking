@@ -3,8 +3,10 @@ package com.elmo.digitalbanking.service.impl;
 import com.elmo.digitalbanking.dto.BankAccountDTO;
 import com.elmo.digitalbanking.entities.BankAccount;
 import com.elmo.digitalbanking.entities.CurrentAccount;
+import com.elmo.digitalbanking.entities.Customer;
 import com.elmo.digitalbanking.entities.SavingAccount;
 import com.elmo.digitalbanking.repository.BankAccountRepo;
+import com.elmo.digitalbanking.repository.CustomerRepo;
 import com.elmo.digitalbanking.service.BankAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,17 +18,23 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class BankAccountServiceImpl implements BankAccountService {
     private final BankAccountRepo repo;
+    private final CustomerRepo customerRepo;
 
     private BankAccountDTO toDTO(BankAccount b) {
-        BankAccountDTO dto = BankAccountDTO.builder()
+        BankAccountDTO.BankAccountDTOBuilder builder = BankAccountDTO.builder()
                 .id(b.getId())
                 .createdAt(b.getCreatedAt())
                 .updatedAt(b.getUpdatedAt())
                 .balance(b.getBalance())
                 .status(b.getStatus())
-                .currency(b.getCurrency())
-                .customerId(b.getCustomer().getId())
-                .build();
+                .currency(b.getCurrency());
+
+        // Add null check for customer
+        if (b.getCustomer() != null) {
+            builder.customerId(b.getCustomer().getId());
+        }
+
+        BankAccountDTO dto = builder.build();
         if (b instanceof CurrentAccount) dto.setOverDraft(((CurrentAccount)b).getOverDraft());
         if (b instanceof SavingAccount) dto.setInterestRate(((SavingAccount)b).getInterestRate());
         return dto;
@@ -48,7 +56,14 @@ public class BankAccountServiceImpl implements BankAccountService {
         b.setBalance(dto.getBalance());
         b.setStatus(dto.getStatus());
         b.setCurrency(dto.getCurrency());
-        // set customer stub (assumes you loaded customer elsewhere)
+
+        // Set customer if customerId is provided
+        if (dto.getCustomerId() != null) {
+            Customer customer = customerRepo.findById(dto.getCustomerId())
+                    .orElseThrow(() -> new RuntimeException("Customer not found with ID: " + dto.getCustomerId()));
+            b.setCustomer(customer);
+        }
+
         return b;
     }
 
@@ -77,6 +92,15 @@ public class BankAccountServiceImpl implements BankAccountService {
         b.setStatus(dto.getStatus());
         b.setCurrency(dto.getCurrency());
         b.setUpdatedAt(new Date());
+
+        // Update customer if customerId is provided and different from current
+        if (dto.getCustomerId() != null && 
+            (b.getCustomer() == null || !dto.getCustomerId().equals(b.getCustomer().getId()))) {
+            Customer customer = customerRepo.findById(dto.getCustomerId())
+                    .orElseThrow(() -> new RuntimeException("Customer not found with ID: " + dto.getCustomerId()));
+            b.setCustomer(customer);
+        }
+
         return toDTO(repo.save(b));
     }
 

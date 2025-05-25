@@ -1,0 +1,259 @@
+"/api/operations/account/{accountId}": {
+      "get": {
+        "tags": [
+          "account-operation-controller"
+        ],
+        "operationId": "getByAccountId",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountOperationDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/pageOperations": {
+      "get": {
+        "tags": [
+          "bank-account-controller"
+        ],
+        "operationId": "getAccountHistory",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/debit": {
+      "post": {
+        "tags": [
+          "bank-account-controller"
+        ],
+        "operationId": "debit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebitCreditRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/accounts/credit": {
+      "post": {
+        "tags": [
+          "bank-account-controller"
+        ],
+        "operationId": "credit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebitCreditRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/accounts/transfer": {
+      "post": {
+        "tags": [
+          "bank-account-controller"
+        ],
+        "operationId": "transfer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/customers/search": {
+      "get": {
+        "tags": [
+          "customer-controller"
+        ],
+        "operationId": "searchCustomers",
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+
+
+          },
+          "AccountDetails": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string"
+              },
+              "balance": {
+                "type": "number",
+                "format": "double"
+              },
+              "currentPage": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "totalPages": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "pageSize": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "accountOperationDTOS": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AccountOperationDTO"
+                }
+              }
+            }
+          },
+          "DebitCreditRequest": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number",
+                "format": "double"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "accountId",
+              "amount"
+            ]
+          },
+          "TransferRequest": {
+            "type": "object",
+            "properties": {
+              "accountSource": {
+                "type": "string"
+              },
+              "accountDestination": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number",
+                "format": "double"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "accountSource",
+              "accountDestination",
+              "amount"
+            ]

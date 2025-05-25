@@ -1,16 +1,15 @@
 package com.elmo.digitalbanking;
 
-import com.elmo.digitalbanking.entities.AccountOperation;
-import com.elmo.digitalbanking.entities.AccountStatus;
-import com.elmo.digitalbanking.entities.BankAccount;
-import com.elmo.digitalbanking.entities.OperationType;
+import com.elmo.digitalbanking.entities.*;
 import com.elmo.digitalbanking.repository.AccountOperationRepo;
 import com.elmo.digitalbanking.repository.BankAccountRepo;
+import com.elmo.digitalbanking.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -24,10 +23,24 @@ public class DigitalBankingApplication {
     public static void main(String[] args) {
         SpringApplication.run(DigitalBankingApplication.class, args);
     }
+    
     @Bean
-    public CommandLineRunner start(BankAccountRepo bankAccountRepo,
-                                   AccountOperationRepo accountOperationRepo) {
+    public CommandLineRunner initData(BankAccountRepo bankAccountRepo,
+                                   AccountOperationRepo accountOperationRepo,
+                                   UserRepository userRepository,
+                                   PasswordEncoder passwordEncoder) {
         return args -> {
+            // Create admin user if not exists
+            if (!userRepository.existsByUsername("admin")) {
+                User adminUser = User.builder()
+                        .username("admin")
+                        .password(passwordEncoder.encode("admin"))
+                        .role(Role.ROLE_ADMIN)
+                        .build();
+                userRepository.save(adminUser);
+                System.out.println("Admin user created with username: admin, password: admin");
+            }
+            
             BankAccount account = bankAccountRepo.save(
                     BankAccount.builder()
                             .createdAt(new Date())

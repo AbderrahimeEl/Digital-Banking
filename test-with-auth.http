@@ -1,0 +1,902 @@
+### Banking API Test Data Generation with JWT Authentication
+### Base URL: http://localhost:8080
+### Structure: Authentication -> Create Users -> Create Accounts for each User -> Create Operations for each Account
+
+###########################################
+# AUTHENTICATION ENDPOINTS (NO AUTH REQUIRED)
+###########################################
+
+### Admin Login (Default admin user)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+### Register New Customer User
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "john.doe",
+  "password": "password123",
+  "role": "ROLE_CUSTOMER",
+  "customerId": 1
+}
+
+###
+### Register Customer User - Jane
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "jane.smith",
+  "password": "password123",
+  "role": "ROLE_CUSTOMER",
+  "customerId": 2
+}
+
+###
+### Refresh Token
+POST http://localhost:8080/api/auth/refresh-token
+Authorization: Bearer {{jwt_token}}
+
+{}
+
+###########################################
+# STEP 1: CREATE USERS (ADMIN ONLY - REQUIRES JWT)
+###########################################
+
+### User 1 - John Doe
+POST http://localhost:8080/api/customers
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@email.com"
+}
+
+###
+### User 2 - Jane Smith
+POST http://localhost:8080/api/customers
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane.smith@email.com"
+}
+
+###
+### User 3 - Michael Johnson
+POST http://localhost:8080/api/customers
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "firstName": "Michael",
+  "lastName": "Johnson",
+  "email": "michael.johnson@email.com"
+}
+
+###
+### User 4 - Sarah Williams
+POST http://localhost:8080/api/customers
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "firstName": "Sarah",
+  "lastName": "Williams",
+  "email": "sarah.williams@email.com"
+}
+
+###
+### User 5 - Robert Brown
+POST http://localhost:8080/api/customers
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "firstName": "Robert",
+  "lastName": "Brown",
+  "email": "robert.brown@email.com"
+}
+
+###########################################
+# STEP 2: CREATE ACCOUNTS FOR EACH USER (REQUIRES JWT)
+###########################################
+
+##############
+# USER 1 ACCOUNTS (John Doe - ID: 1)
+##############
+
+### Account 1.1 - John's Checking Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 2500.00,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 1,
+  "overDraft": 500.00,
+  "interestRate": 0.01
+}
+
+###
+### Account 1.2 - John's Savings Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 15000.00,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 1,
+  "overDraft": 0.00,
+  "interestRate": 0.025
+}
+
+###
+### Account 1.3 - John's EUR Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 3500.75,
+  "status": "ACTIVE",
+  "currency": "EUR",
+  "customerId": 1,
+  "overDraft": 1000.00,
+  "interestRate": 0.015
+}
+
+##############
+# USER 2 ACCOUNTS (Jane Smith - ID: 2)
+##############
+
+### Account 2.1 - Jane's Personal Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 4200.50,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 2,
+  "overDraft": 750.00,
+  "interestRate": 0.012
+}
+
+###
+### Account 2.2 - Jane's Business Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 25000.00,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 2,
+  "overDraft": 5000.00,
+  "interestRate": 0.008
+}
+
+##############
+# USER 3 ACCOUNTS (Michael Johnson - ID: 3)
+##############
+
+### Account 3.1 - Michael's Main Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 1850.25,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 3,
+  "overDraft": 300.00,
+  "interestRate": 0.015
+}
+
+###
+### Account 3.2 - Michael's Investment Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 12500.00,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 3,
+  "overDraft": 0.00,
+  "interestRate": 0.035
+}
+
+###
+### Account 3.3 - Michael's GBP Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 2200.80,
+  "status": "ACTIVE",
+  "currency": "GBP",
+  "customerId": 3,
+  "overDraft": 500.00,
+  "interestRate": 0.02
+}
+
+##############
+# USER 4 ACCOUNTS (Sarah Williams - ID: 4)
+##############
+
+### Account 4.1 - Sarah's Checking
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 3100.00,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 4,
+  "overDraft": 600.00,
+  "interestRate": 0.01
+}
+
+###
+### Account 4.2 - Sarah's Savings
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 8750.50,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 4,
+  "overDraft": 0.00,
+  "interestRate": 0.028
+}
+
+##############
+# USER 5 ACCOUNTS (Robert Brown - ID: 5)
+##############
+
+### Account 5.1 - Robert's Primary Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 5500.75,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 5,
+  "overDraft": 1000.00,
+  "interestRate": 0.018
+}
+
+###
+### Account 5.2 - Robert's Emergency Fund
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 20000.00,
+  "status": "ACTIVE",
+  "currency": "USD",
+  "customerId": 5,
+  "overDraft": 0.00,
+  "interestRate": 0.03
+}
+
+###
+### Account 5.3 - Robert's Travel Fund (EUR)
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "balance": 1500.00,
+  "status": "ACTIVE",
+  "currency": "EUR",
+  "customerId": 5,
+  "overDraft": 200.00,
+  "interestRate": 0.01
+}
+
+###########################################
+# STEP 3: CREATE OPERATIONS FOR EACH ACCOUNT (REQUIRES JWT)
+###########################################
+
+##############
+# OPERATIONS FOR ACCOUNT 1 (John's Checking - ID: 1)
+##############
+
+### Op 1.1 - Salary Deposit
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-01T09:00:00",
+  "amount": 5000.00,
+  "type": "CREDIT",
+  "bankAccountId": 1
+}
+
+###
+### Op 1.2 - Rent Payment
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-02T10:30:00",
+  "amount": 1200.00,
+  "type": "DEBIT",
+  "bankAccountId": 1
+}
+
+###
+### Op 1.3 - Grocery Shopping
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-03T14:15:00",
+  "amount": 150.75,
+  "type": "DEBIT",
+  "bankAccountId": 1
+}
+
+###
+### Op 1.4 - ATM Withdrawal
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-04T18:20:00",
+  "amount": 200.00,
+  "type": "DEBIT",
+  "bankAccountId": 1
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 2 (John's Savings - ID: 2)
+##############
+
+### Op 2.1 - Initial Deposit
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-01T08:00:00",
+  "amount": 10000.00,
+  "type": "CREDIT",
+  "bankAccountId": 2
+}
+
+###
+### Op 2.2 - Monthly Saving
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-15T12:00:00",
+  "amount": 1000.00,
+  "type": "CREDIT",
+  "bankAccountId": 2
+}
+
+###
+### Op 2.3 - Interest Payment
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-31T23:59:00",
+  "amount": 25.50,
+  "type": "CREDIT",
+  "bankAccountId": 2
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 3 (John's EUR Account - ID: 3)
+##############
+
+### Op 3.1 - Currency Exchange
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-05T11:30:00",
+  "amount": 2000.00,
+  "type": "CREDIT",
+  "bankAccountId": 3
+}
+
+###
+### Op 3.2 - European Purchase
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-10T16:45:00",
+  "amount": 350.25,
+  "type": "DEBIT",
+  "bankAccountId": 3
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 4 (Jane's Personal - ID: 4)
+##############
+
+### Op 4.1 - Freelance Payment
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-03T13:20:00",
+  "amount": 2500.00,
+  "type": "CREDIT",
+  "bankAccountId": 4
+}
+
+###
+### Op 4.2 - Utilities Bill
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-05T09:15:00",
+  "amount": 180.50,
+  "type": "DEBIT",
+  "bankAccountId": 4
+}
+
+###
+### Op 4.3 - Shopping
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-07T15:30:00",
+  "amount": 420.75,
+  "type": "DEBIT",
+  "bankAccountId": 4
+}
+
+###
+### Op 4.4 - Transfer to Savings
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-08T10:00:00",
+  "amount": 800.00,
+  "type": "DEBIT",
+  "bankAccountId": 4
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 5 (Jane's Business - ID: 5)
+##############
+
+### Op 5.1 - Client Payment
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-02T14:00:00",
+  "amount": 15000.00,
+  "type": "CREDIT",
+  "bankAccountId": 5
+}
+
+###
+### Op 5.2 - Office Rent
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-03T11:00:00",
+  "amount": 2500.00,
+  "type": "DEBIT",
+  "bankAccountId": 5
+}
+
+###
+### Op 5.3 - Equipment Purchase
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-06T16:20:00",
+  "amount": 3200.00,
+  "type": "DEBIT",
+  "bankAccountId": 5
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 6 (Michael's Main - ID: 6)
+##############
+
+### Op 6.1 - Salary
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-01T08:30:00",
+  "amount": 3500.00,
+  "type": "CREDIT",
+  "bankAccountId": 6
+}
+
+###
+### Op 6.2 - Mortgage Payment
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-02T12:00:00",
+  "amount": 1800.00,
+  "type": "DEBIT",
+  "bankAccountId": 6
+}
+
+###
+### Op 6.3 - Gas Station
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-04T17:45:00",
+  "amount": 65.00,
+  "type": "DEBIT",
+  "bankAccountId": 6
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 7 (Michael's Investment - ID: 7)
+##############
+
+### Op 7.1 - Investment Deposit
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-01T09:00:00",
+  "amount": 8000.00,
+  "type": "CREDIT",
+  "bankAccountId": 7
+}
+
+###
+### Op 7.2 - Stock Purchase
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-10T10:30:00",
+  "amount": 2500.00,
+  "type": "DEBIT",
+  "bankAccountId": 7
+}
+
+###
+### Op 7.3 - Dividend Payment
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-15T12:00:00",
+  "amount": 150.00,
+  "type": "CREDIT",
+  "bankAccountId": 7
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 8 (Michael's GBP - ID: 8)
+##############
+
+### Op 8.1 - UK Business Payment
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-05T14:20:00",
+  "amount": 1500.00,
+  "type": "CREDIT",
+  "bankAccountId": 8
+}
+
+###
+### Op 8.2 - London Hotel
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-08T19:30:00",
+  "amount": 250.00,
+  "type": "DEBIT",
+  "bankAccountId": 8
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 9 (Sarah's Checking - ID: 9)
+##############
+
+### Op 9.1 - Paycheck
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-01T08:00:00",
+  "amount": 2800.00,
+  "type": "CREDIT",
+  "bankAccountId": 9
+}
+
+###
+### Op 9.2 - Car Payment
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-03T11:00:00",
+  "amount": 450.00,
+  "type": "DEBIT",
+  "bankAccountId": 9
+}
+
+###
+### Op 9.3 - Restaurant
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-06T20:15:00",
+  "amount": 85.50,
+  "type": "DEBIT",
+  "bankAccountId": 9
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 10 (Sarah's Savings - ID: 10)
+##############
+
+### Op 10.1 - Savings Transfer
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-01T12:00:00",
+  "amount": 5000.00,
+  "type": "CREDIT",
+  "bankAccountId": 10
+}
+
+###
+### Op 10.2 - Monthly Savings
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-15T10:00:00",
+  "amount": 500.00,
+  "type": "CREDIT",
+  "bankAccountId": 10
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 11 (Robert's Primary - ID: 11)
+##############
+
+### Op 11.1 - Consulting Fee
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-02T15:30:00",
+  "amount": 4500.00,
+  "type": "CREDIT",
+  "bankAccountId": 11
+}
+
+###
+### Op 11.2 - Insurance Premium
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-04T09:00:00",
+  "amount": 320.00,
+  "type": "DEBIT",
+  "bankAccountId": 11
+}
+
+###
+### Op 11.3 - Supermarket
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-07T16:45:00",
+  "amount": 125.80,
+  "type": "DEBIT",
+  "bankAccountId": 11
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 12 (Robert's Emergency Fund - ID: 12)
+##############
+
+### Op 12.1 - Emergency Fund Setup
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-01T10:00:00",
+  "amount": 15000.00,
+  "type": "CREDIT",
+  "bankAccountId": 12
+}
+
+###
+### Op 12.2 - Additional Contribution
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-20T12:00:00",
+  "amount": 1000.00,
+  "type": "CREDIT",
+  "bankAccountId": 12
+}
+
+##############
+# OPERATIONS FOR ACCOUNT 13 (Robert's Travel Fund - ID: 13)
+##############
+
+### Op 13.1 - Travel Savings
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-01T11:00:00",
+  "amount": 1000.00,
+  "type": "CREDIT",
+  "bankAccountId": 13
+}
+
+###
+### Op 13.2 - Flight Booking
+POST http://localhost:8080/api/operations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "date": "2024-01-12T14:30:00",
+  "amount": 450.00,
+  "type": "DEBIT",
+  "bankAccountId": 13
+}
+
+###########################################
+# VERIFICATION QUERIES (REQUIRES JWT)
+###########################################
+
+### Get All Customers (Admin only)
+GET http://localhost:8080/api/customers
+Authorization: Bearer {{jwt_token}}
+
+###
+### Get All Accounts (Admin can see all, Customer sees own only)
+GET http://localhost:8080/api/accounts
+Authorization: Bearer {{jwt_token}}
+
+###
+### Get All Operations (Admin can see all, Customer sees own only)
+GET http://localhost:8080/api/operations
+Authorization: Bearer {{jwt_token}}
+
+###
+### Get Specific Customer (Admin only)
+GET http://localhost:8080/api/customers/1
+Authorization: Bearer {{jwt_token}}
+
+###
+### Get Specific Account (Admin or owner only)
+GET http://localhost:8080/api/accounts/1
+Authorization: Bearer {{jwt_token}}
+
+###
+### Get Operations for Specific Account (Admin or owner only)
+GET http://localhost:8080/api/operations/account/1
+Authorization: Bearer {{jwt_token}}
+
+###
+### Get Customer's Accounts (Customer can see own only)
+GET http://localhost:8080/api/customers/1/accounts
+Authorization: Bearer {{jwt_token}}
+
+###########################################
+# TESTING ROLE-BASED ACCESS CONTROL
+###########################################
+
+### Test: Customer trying to access another customer's data (Should fail)
+GET http://localhost:8080/api/customers/2/accounts
+Authorization: Bearer {{customer_jwt_token}}
+
+###
+### Test: Customer trying to create another customer (Should fail)
+POST http://localhost:8080/api/customers
+Content-Type: application/json
+Authorization: Bearer {{customer_jwt_token}}
+
+{
+  "firstName": "Unauthorized",
+  "lastName": "User",
+  "email": "unauthorized@email.com"
+}
+
+###
+### Test: Access without JWT token (Should fail with 401)
+GET http://localhost:8080/api/customers
+
+###
+### Test: Invalid JWT token (Should fail with 403)
+GET http://localhost:8080/api/customers
+Authorization: Bearer invalid.jwt.token
