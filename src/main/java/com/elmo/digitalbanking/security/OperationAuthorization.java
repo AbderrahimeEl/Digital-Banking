@@ -20,15 +20,15 @@ public class OperationAuthorization {
     private final AccountAuthorization accountAuthorization;
     
     public boolean isOperationAuthorized(Long operationId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return false;
-        }
-        
-        User user = (User) authentication.getPrincipal();
-        if (user.getCustomerId() == null) {
-            return false;
-        }
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication == null || !authentication.isAuthenticated()) {
+//            return false;
+//        }
+//
+//        User user = (User) authentication.getPrincipal();
+//        if (user.getCustomerId() == null) {
+//            return false;
+//        }
         
         Optional<AccountOperation> operationOpt = operationRepo.findById(operationId);
         if (operationOpt.isEmpty()) {
