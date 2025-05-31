@@ -1,21 +1,29 @@
 package com.elmo.digitalbanking.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.elmo.digitalbanking.dto.AccountOperationDTO;
 import com.elmo.digitalbanking.entities.AccountOperation;
 import com.elmo.digitalbanking.entities.BankAccount;
+import com.elmo.digitalbanking.entities.OperationType;
+import com.elmo.digitalbanking.exception.AccountNotFoundException;
 import com.elmo.digitalbanking.repository.AccountOperationRepo;
 import com.elmo.digitalbanking.repository.BankAccountRepo;
 import com.elmo.digitalbanking.service.AccountOperationService;
+import com.elmo.digitalbanking.service.TransferService;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import java.util.stream.Collectors;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AccountOperationServiceImpl implements AccountOperationService {
     private final AccountOperationRepo repo;
     private final BankAccountRepo accountRepo;
+    private final TransferService transferService;
 
     private AccountOperationDTO toDTO(AccountOperation op) {
         return AccountOperationDTO.builder()
@@ -50,9 +58,25 @@ public class AccountOperationServiceImpl implements AccountOperationService {
     }
 
     @Override
+    @Transactional
     public AccountOperationDTO create(AccountOperationDTO dto) {
-        AccountOperation op = repo.save(toEntity(dto));
-        return toDTO(op);
+        // Use transfer service to ensure balance updates
+        if (dto.getType() == OperationType.DEBIT) {
+            transferService.debit(dto.getBankAccountId(), dto.getAmount(), "Manual debit operation");
+        } else if (dto.getType() == OperationType.CREDIT) {
+            transferService.credit(dto.getBankAccountId(), dto.getAmount(), "Manual credit operation");
+        }
+
+        // Return the latest operation for this account
+        BankAccount account = accountRepo.findById(dto.getBankAccountId())
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        // Find the most recent operation for this account
+        return account.getOperations().stream()
+                .filter(op -> op.getType() == dto.getType() && Double.compare(op.getAmount(), dto.getAmount()) == 0)
+                .max((op1, op2) -> op1.getDate().compareTo(op2.getDate()))
+                .map(this::toDTO)
+                .orElseThrow(() -> new RuntimeException("Operation not found after creation"));
     }
 
     @Override

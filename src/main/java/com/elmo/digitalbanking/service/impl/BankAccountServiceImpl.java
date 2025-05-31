@@ -1,18 +1,23 @@
 package com.elmo.digitalbanking.service.impl;
 
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.elmo.digitalbanking.dto.BankAccountDTO;
 import com.elmo.digitalbanking.entities.BankAccount;
 import com.elmo.digitalbanking.entities.CurrentAccount;
 import com.elmo.digitalbanking.entities.Customer;
 import com.elmo.digitalbanking.entities.SavingAccount;
+import com.elmo.digitalbanking.exception.AccountNotFoundException;
+import com.elmo.digitalbanking.exception.CustomerNotFoundException;
 import com.elmo.digitalbanking.repository.BankAccountRepo;
 import com.elmo.digitalbanking.repository.CustomerRepo;
 import com.elmo.digitalbanking.service.BankAccountService;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import java.util.stream.Collectors;
-import java.util.List;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +65,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         // Set customer if customerId is provided
         if (dto.getCustomerId() != null) {
             Customer customer = customerRepo.findById(dto.getCustomerId())
-                    .orElseThrow(() -> new RuntimeException("Customer not found with ID: " + dto.getCustomerId()));
+                    .orElseThrow(() -> new CustomerNotFoundException("Customer not found with ID: " + dto.getCustomerId()));
             b.setCustomer(customer);
         }
 
@@ -75,7 +80,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public BankAccountDTO getById(Long id) {
         return repo.findById(id).map(this::toDTO)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Account not found with ID: " + id));
     }
 
     @Override
@@ -94,7 +99,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         b.setUpdatedAt(new Date());
 
         // Update customer if customerId is provided and different from current
-        if (dto.getCustomerId() != null && 
+        if (dto.getCustomerId() != null &&
             (b.getCustomer() == null || !dto.getCustomerId().equals(b.getCustomer().getId()))) {
             Customer customer = customerRepo.findById(dto.getCustomerId())
                     .orElseThrow(() -> new RuntimeException("Customer not found with ID: " + dto.getCustomerId()));
